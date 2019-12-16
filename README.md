@@ -127,24 +127,28 @@ You may also download a binary from [Github](https://github.com/borkdude/babashk
 ## Usage
 
 ``` shellsession
-Usage: bb [ -i | -I ] [ -o | -O ] [--verbose] [ --stream ] ( -e <expression> | -f <file> | --repl | --socket-repl [<host>:]<port> )
+Usage: bb [ -i | -I ] [ -o | -O ] [ --stream ] [--verbose]
+          [ ( --classpath | -cp ) <cp> ] [ ( --main | -m ) <main-namespace> ]
+          ( -e <expression> | -f <file> | --repl | --socket-repl [<host>:]<port> )
+          [ arg* ]
 
 Options:
 
-  --help, -h or -?: print this help text.
-  --version: print the current version of babashka.
-
-  -i: bind *in* to a lazy seq of lines from stdin.
-  -I: bind *in* to a lazy seq of EDN values from stdin.
-  -o: write lines to stdout.
-  -O: write EDN values to stdout.
-  --verbose: print entire stacktrace in case of exception.
-  --stream: stream over lines or EDN values from stdin. Combined with -i or -I *in* becomes a single value per iteration.
-  -e, --eval <expression>: evaluate an expression
-  -f, --file <path>: evaluate a file
-  --repl: start REPL
-  --socket-repl: start socket REPL. Specify port (e.g. 1666) or host and port separated by colon (e.g. 127.0.0.1:1666).
-  --time: print execution time before exiting.
+  --help, -h or -?   Print this help text.
+  --version          Print the current version of babashka.
+  -i                 Bind *in* to a lazy seq of lines from stdin.
+  -I                 Bind *in* to a lazy seq of EDN values from stdin.
+  -o                 Write lines to stdout.
+  -O                 Write EDN values to stdout.
+  --verbose          Print entire stacktrace in case of exception.
+  --stream           Stream over lines or EDN values from stdin. Combined with -i or -I *in* becomes a single value per iteration.
+  -e, --eval <expr>  Evaluate an expression.
+  -f, --file <path>  Evaluate a file.
+  -cp, --classpath   Classpath to use.
+  -m, --main <ns>    Call the -main function from namespace with args.
+  --repl             Start REPL
+  --socket-repl      Start socket REPL. Specify port (e.g. 1666) or host and port separated by colon (e.g. 127.0.0.1:1666).
+  --time             Print execution time before exiting.
 
 If neither -e, -f, or --socket-repl are specified, then the first argument that is not parsed as a option is treated as a file if it exists, or as an expression otherwise.
 Everything after that is bound to *command-line-args*.
@@ -367,19 +371,8 @@ $ bb --classpath "$CLASSPATH" --main my-gist-script
 Hello from gist script!
 ```
 
-The `bbk` shell script is a thin wrapper around the `clojure` tool, so you can
-use Babashka projects in a similar way:
-
-``` shellsession
-$ bbk -m my-gist-script
-Hello from gist script!
-```
-
-The script will call `bb` with the `--classpath` argument as a result of calling
-`clojure`.
-
 If there is no `--classpath` argument, the `BABASHKA_CLASSPATH` environment
-variable will be used if set:
+variable will be used:
 
 ``` shellsession
 $ export BABASHKA_CLASSPATH=$(clojure -Spath)
@@ -637,7 +630,7 @@ less
 
 ### Portable tree command
 
-See [examples/tree.clj](https://github.com/borkdude/babashka/blob/8afb87142e0e4da8b6f912cfd7daf9c30b805ab3/examples/tree.clj).
+See [examples/tree.clj](https://github.com/borkdude/babashka/blob/master/examples/tree.clj).
 
 ``` shellsession
 $ clojure -Sdeps '{:deps {org.clojure/tools.cli {:mvn/version "0.4.2"}}}' examples/tree.clj src
@@ -655,6 +648,21 @@ src
     │   ├── tools
     │   │   └── cli.clj
 ...
+```
+
+### List outdated maven dependencies
+
+See [examples/outdated.clj](https://github.com/borkdude/babashka/blob/master/examples/outdated.clj).
+Inspired by an idea from [@seancorfield](https://github.com/seancorfield).
+
+``` shellsession
+$ cat /tmp/deps.edn
+{:deps {cheshire {:mvn/version "5.8.1"}
+        clj-http {:mvn/version "3.4.0"}}}
+
+$ examples/outdated.clj /tmp/deps.edn
+clj-http/clj-http can be upgraded from 3.4.0 to 3.10.0
+cheshire/cheshire can be upgraded from 5.8.1 to 5.9.0
 ```
 
 ## Thanks
