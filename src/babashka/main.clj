@@ -3,17 +3,17 @@
   (:require
    [babashka.impl.async :refer [async-namespace]]
    [babashka.impl.cheshire :refer [cheshire-core-namespace]]
+   [babashka.impl.classes :as classes]
+   [babashka.impl.classpath :as cp]
    [babashka.impl.clojure.core :refer [core-extras]]
    [babashka.impl.clojure.java.io :refer [io-namespace]]
    [babashka.impl.clojure.stacktrace :refer [print-stack-trace]]
-   [babashka.impl.conch :refer [conch-namespace]]
    [babashka.impl.csv :as csv]
    [babashka.impl.pipe-signal-handler :refer [handle-pipe! pipe-signal-received?]]
    [babashka.impl.repl :as repl]
    [babashka.impl.socket-repl :as socket-repl]
    [babashka.impl.tools.cli :refer [tools-cli-namespace]]
    [babashka.impl.utils :refer [eval-string]]
-   [babashka.impl.classpath :as cp]
    [babashka.wait :as wait]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
@@ -235,7 +235,6 @@ Everything after that is bound to *command-line-args*."))
                         sig babashka.signal
                         shell clojure.java.shell
                         io clojure.java.io
-                        conch me.raynes.conch.low-level
                         async clojure.core.async
                         csv clojure.data.csv
                         json cheshire.core}
@@ -248,7 +247,6 @@ Everything after that is bound to *command-line-args*."))
                                           'wait-for-path wait/wait-for-path}
                           'babashka.signal {'pipe-signal-received? pipe-signal-received?}
                           'clojure.java.io io-namespace
-                          'me.raynes.conch.low-level conch-namespace
                           'clojure.core.async async-namespace
                           'clojure.data.csv csv/csv-namespace
                           'cheshire.core cheshire-core-namespace}
@@ -256,34 +254,7 @@ Everything after that is bound to *command-line-args*."))
                         'System/exit exit}
              :env env
              :features #{:bb}
-             :classes {'java.lang.ArithmeticException ArithmeticException
-                       'java.lang.AssertionError AssertionError
-                       'java.lang.Boolean Boolean
-                       'java.io.BufferedWriter java.io.BufferedWriter
-                       'java.io.BufferedReader java.io.BufferedReader
-                       'java.lang.Class Class
-                       'java.lang.Double Double
-                       'java.lang.Exception Exception
-                       'clojure.lang.ExceptionInfo clojure.lang.ExceptionInfo
-                       'java.lang.Integer Integer
-                       'java.io.File java.io.File
-                       'clojure.lang.LineNumberingPushbackReader clojure.lang.LineNumberingPushbackReader
-                       'java.util.regex.Pattern java.util.regex.Pattern
-                       'java.lang.String String
-                       'java.io.StringReader java.io.StringReader
-                       'java.io.StringWriter java.io.StringWriter
-                       'java.lang.System System
-                       'java.lang.Thread Thread
-                       'sun.nio.fs.UnixPath sun.nio.fs.UnixPath
-                       'java.nio.file.attribute.FileAttribute java.nio.file.attribute.FileAttribute
-                       'java.nio.file.attribute.PosixFilePermission java.nio.file.attribute.PosixFilePermission
-                       'java.nio.file.attribute.PosixFilePermissions java.nio.file.attribute.PosixFilePermissions
-                       'java.nio.file.CopyOption java.nio.file.CopyOption
-                       'java.nio.file.FileAlreadyExistsException java.nio.file.FileAlreadyExistsException
-                       'java.nio.file.Files java.nio.file.Files
-                       'java.nio.file.NoSuchFileException java.nio.file.NoSuchFileException
-                       'java.nio.file.StandardCopyOption java.nio.file.StandardCopyOption
-                       }
+             :classes classes/class-map
              :imports '{ArithmeticException java.lang.ArithmeticException
                         AssertionError java.lang.AssertionError
                         Boolean java.lang.Boolean
@@ -292,6 +263,7 @@ Everything after that is bound to *command-line-args*."))
                         Exception java.lang.Exception
                         Integer java.lang.Integer
                         File java.io.File
+                        ProcessBuilder java.lang.ProcessBuilder
                         String java.lang.String
                         System java.lang.System
                         Thread java.lang.Thread}
